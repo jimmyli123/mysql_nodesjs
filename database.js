@@ -1,10 +1,13 @@
 import mysql from 'mysql2'
 
+import dotenv from 'dotenv'
+dotenv.config();
+
 const pool = mysql.createPool({
-    host:'127.0.0.1',
-    user: 'root',
-    password: '1314',
-    database: 'notes_app'
+    host: process.env.MYSQL_HOST,
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASSWORD,
+    database: process.env.MYSQL_DATABASE
 }).promise()
 
 export async function getNotes() {
@@ -16,8 +19,8 @@ export async function getNote(id) {
     return rows[0];
 }
 
-export async function createNote(title, content) {
-    const [result] = await pool.query(`INSERT INTO notes (title, contents) VALUES (?, ?)`,[title, content]);
+export async function createNote(title, contents) {
+    const [result] = await pool.query(`INSERT INTO notes (title, contents) VALUES (?, ?)`,[title, contents]);
     const id = result.insertId;
     return getNote(id);
 }
